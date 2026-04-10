@@ -859,3 +859,153 @@ h2 {
   letter-spacing: 0.12em;
   margin-top: 0.3rem;
 }
+
+/* ── RANKINGS PAGE ── */
+.rankings-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+}
+
+@media (max-width: 800px) {
+  .rankings-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ranking-column {
+  background: var(--bg-card);
+  border: 1px solid rgba(201, 168, 76, 0.12);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.ranking-header {
+  padding: 0.8rem 1rem;
+  border-bottom: 3px solid var(--gold);
+  background: var(--bg-dark);
+}
+
+.ranking-category {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.8rem;
+  color: var(--cream);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+}
+
+/* ── Champion (top of column) ── */
+.ranking-champion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem 1.2rem;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+  background: radial-gradient(ellipse at 50% 20%, rgba(201, 168, 76, 0.06) 0%, transparent 70%);
+  min-height: 180px;
+  justify-content: center;
+}
+
+.ranking-champion-avatar {
+  position: relative;
+  margin-bottom: 0.6rem;
+}
+
+.ranking-avatar-lg {
+  width: 80px !important;
+  height: 80px !important;
+  font-size: 2rem !important;
+  border-width: 3px;
+  border-color: var(--gold) !important;
+  box-shadow: 0 4px 16px rgba(201, 168, 76, 0.2);
+}
+
+.ranking-champion-name {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: 1.3rem;
+  color: var(--white);
+  letter-spacing: 0.05em;
+  text-align: center;
+  margin: 0;
+}
+
+.ranking-champion-nickname {
+  font-style: italic;
+  color: var(--cream-dim);
+  font-size: 0.85rem;
+  margin-top: 0.1rem;
+}
+
+.ranking-champion-tag {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-top: 0.4rem;
+}
+
+.ranking-champion-value {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: var(--gold);
+  margin-top: 0.2rem;
+}
+
+.ranking-empty {
+  min-height: 180px;
+}
+
+/* ── Ranked list ── */
+.ranking-list {
+  padding: 0.3rem 0;
+}
+
+.ranking-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.05);
+  transition: background 0.15s;
+}
+
+.ranking-row:last-child {
+  border-bottom: none;
+}
+
+.ranking-row:hover {
+  background: var(--bg-card-hover);
+}
+
+.ranking-pos {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--cream-dim);
+  min-width: 24px;
+  text-align: center;
+}
+
+.ranking-avatar-sm {
+  width: 32px !important;
+  height: 32px !important;
+  font-size: 0.85rem !important;
+  flex-shrink: 0;
+}
+
+.ranking-name {
+  flex: 1;
+  font-size: 0.95rem;
+  color: var(--cream);
+}
+
+.ranking-value {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--gold-dim);
+  text-align: right;
+}
