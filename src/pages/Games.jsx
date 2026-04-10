@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import { getGames, getPlayers, removeGame, addGame } from '../store'
+import { useAuth } from '../AuthContext'
 
 const emptyResult = () => ({ playerId: '', position: '', rebuy: false })
 
 export default function Games() {
+  const { isAdmin } = useAuth()
   const [games, setGames] = useState([])
   const [players, setPlayers] = useState({})
   const [playersList, setPlayersList] = useState([])
@@ -125,9 +127,11 @@ export default function Games() {
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.3rem' }}>
         <h1>Game History</h1>
-        <button className="btn btn-primary" onClick={openModal}>
-          + Log Game
-        </button>
+        {isAdmin && (
+          <button className="btn btn-primary" onClick={openModal}>
+            + Log Game
+          </button>
+        )}
       </div>
       <p className="subtitle">A chronicle of every hand dealt in Surami</p>
 
@@ -135,11 +139,13 @@ export default function Games() {
         <div className="empty-state">
           <div className="icon">♥</div>
           <p>No games recorded yet.</p>
-          <p style={{ marginTop: '0.5rem' }}>
-            <button onClick={openModal} style={{ background: 'none', border: 'none', color: 'var(--gold)', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', textDecoration: 'underline' }}>
-              Log your first game
-            </button>
-          </p>
+          {isAdmin && (
+            <p style={{ marginTop: '0.5rem' }}>
+              <button onClick={openModal} style={{ background: 'none', border: 'none', color: 'var(--gold)', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', textDecoration: 'underline' }}>
+                Log your first game
+              </button>
+            </p>
+          )}
         </div>
       ) : (
         games.map(game => {
@@ -241,14 +247,16 @@ export default function Games() {
                       "{game.notes}"
                     </div>
                   )}
-                  <div style={{ marginTop: '0.8rem', textAlign: 'right' }}>
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={(e) => { e.stopPropagation(); handleRemove(game.id) }}
-                    >
-                      Delete Game
-                    </button>
-                  </div>
+                  {isAdmin && (
+                    <div style={{ marginTop: '0.8rem', textAlign: 'right' }}>
+                      <button
+                        className="btn btn-danger btn-sm"
+                        onClick={(e) => { e.stopPropagation(); handleRemove(game.id) }}
+                      >
+                        Delete Game
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import { getPlayers, addPlayer } from '../store'
+import { useAuth } from '../AuthContext'
 
 export default function Players() {
+  const { isAdmin } = useAuth()
   const [players, setPlayers] = useState([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
@@ -61,9 +63,11 @@ export default function Players() {
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.3rem' }}>
         <h1>Players</h1>
-        <button className="btn btn-primary" onClick={openModal}>
-          + Add Player
-        </button>
+        {isAdmin && (
+          <button className="btn btn-primary" onClick={openModal}>
+            + Add Player
+          </button>
+        )}
       </div>
       <p className="subtitle">The gentlemen of the table</p>
 
@@ -71,11 +75,13 @@ export default function Players() {
         <div className="empty-state">
           <div className="icon">♣</div>
           <p>No players registered yet.</p>
-          <p style={{ marginTop: '0.5rem' }}>
-            <button onClick={openModal} style={{ background: 'none', border: 'none', color: 'var(--gold)', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', textDecoration: 'underline' }}>
-              Register your first player
-            </button>
-          </p>
+          {isAdmin && (
+            <p style={{ marginTop: '0.5rem' }}>
+              <button onClick={openModal} style={{ background: 'none', border: 'none', color: 'var(--gold)', cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', textDecoration: 'underline' }}>
+                Register your first player
+              </button>
+            </p>
+          )}
         </div>
       ) : (
         <div className="players-grid">
