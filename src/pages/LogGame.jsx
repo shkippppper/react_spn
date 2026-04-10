@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react'
 import { getPlayers, addGame } from '../store'
 import { useNavigate } from 'react-router-dom'
 
-const emptyResult = () => ({ playerId: '', position: '', buyIn: '', cashOut: '' })
+const emptyResult = () => ({ playerId: '', position: '', rebuy: false })
 
 export default function LogGame() {
   const [players, setPlayers] = useState([])
   const [date, setDate] = useState(new Date().toISOString().split('T')[0])
+  const [buyIn, setBuyIn] = useState('')
   const [results, setResults] = useState([emptyResult(), emptyResult()])
   const [notes, setNotes] = useState('')
   const [loading, setLoading] = useState(true)
@@ -32,27 +33,37 @@ export default function LogGame() {
     setResults(results.filter((_, idx) => idx !== i))
   }
 
+  const buyInNum = parseFloat(buyIn) || 0
+  const validPlayers = results.filter(r => r.playerId)
+  const totalPot = validPlayers.reduce((sum, r) => sum + buyInNum + (r.rebuy ? buyInNum : 0), 0)
+
   async function handleSubmit(e) {
     e.preventDefault()
     if (submitting) return
+
+    if (!buyInNum || buyInNum <= 0) {
+      alert('Set a buy-in amount')
+      return
+    }
 
     const validResults = results
       .filter(r => r.playerId && r.position)
       .map(r => ({
         playerId: r.playerId,
         position: parseInt(r.position),
-        buyIn: parseFloat(r.buyIn) || 0,
-        cashOut: parseFloat(r.cashOut) || 0,
+        rebuy: r.rebuy,
+        buyIn: buyInNum + (r.rebuy ? buyInNum : 0),
+        cashOut: 0,
       }))
 
     if (validResults.length < 2) {
-      alert('At least 2 players needed')
+      alert('At least 2 players with positions needed')
       return
     }
 
     setSubmitting(true)
     try {
-      await addGame({ date, results: validResults, notes })
+      await addGame({ date, buyIn: buyInNum, results: validResults, notes })
       navigate('/games')
     } catch (err) {
       alert('Failed to log game: ' + err.message)
@@ -77,72 +88,104 @@ export default function LogGame() {
       ) : (
         <div className="card">
           <form onSubmit={handleSubmit}>
-            <div className="form-group" style={{ maxWidth: 220 }}>
-              <label>Date</label>
-              <input type="date" value={date} onChange={e => setDate(e.target.value)} />
-            </div>
-
-            <h2 style={{ marginTop: '1rem' }}>Results</h2>
-
-            {results.map((r, i) => (
-              <div key={i} className="result-row">
-                <div className="form-group">
-                  <label>Player</label>
-                  <select
-                    value={r.playerId}
-                    onChange={e => updateResult(i, 'playerId', e.target.value)}
-                  >
-                    <option value="">Select player...</option>
-                    {players.map(p => (
-                      <option
-                        key={p.id}
-                        value={p.id}
-                        disabled={usedPlayerIds.includes(p.id) && r.playerId !== p.id}
-                      >
-                        {p.name}{p.nickname ? ` "${p.nickname}"` : ''}
-                      </option>
-                    ))}
-                  </select>
+            {/* ── Game Setup ── */}
+            <div className="game-setup">
+              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'end' }}>
+                <div className="form-group" style={{ maxWidth: 200 }}>
+                  <label>Date</label>
+                  <input type="date" value={date} onChange={e => setDate(e.target.value)} />
                 </div>
-                <div className="form-group">
-                  <label>Position</label>
-                  <input
-                    type="number"
-                    min="1"
-                    value={r.position}
-                    onChange={e => updateResult(i, 'position', e.target.value)}
-                    placeholder="#"
-                  />
+                <div className="form-group" style={{ maxWidth: 200 }}>
+                  <label>Buy-in Amount</label>
+                  <div className="buy-in-input">
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={buyIn}
+                      onChange={e => setBuyIn(e.target.value)}
+                      placeholder="0.00"
+                      required
+                    />
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label>Buy-in</label>
-                  <input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={r.buyIn}
-                    onChange={e => updateResult(i, 'buyIn', e.target.value)}
-                    placeholder="0"
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Cash Out</label>
-                  <input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={r.cashOut}
-                    onChange={e => updateResult(i, 'cashOut', e.target.value)}
-                    placeholder="0"
-                  />
-                </div>
-                {results.length > 2 && (
-                  <button type="button" className="remove-row" onClick={() => removeRow(i)}>
-                    ×
-                  </button>
+                {buyInNum > 0 && (
+                  <div className="pot-display">
+                    <span className="pot-label">Total Pot</span>
+                    <span className="pot-value">{totalPot}</span>
+                  </div>
                 )}
               </div>
-            ))}
+            </div>
+
+            {/* ── Players ── */}
+            <h2 style={{ marginTop: '1.5rem' }}>Players</h2>
+
+            <div className="player-results-list">
+              {results.map((r, i) => {
+                const player = players.find(p => p.id === r.playerId)
+                return (
+                  <div key={i} className="player-result-row">
+                    <div className="player-result-main">
+                      <div className="form-group" style={{ flex: 2, minWidth: '150px' }}>
+                        <label>Player</label>
+                        <select
+                          value={r.playerId}
+                          onChange={e => updateResult(i, 'playerId', e.target.value)}
+                        >
+                          <option value="">Select player...</option>
+                          {players.map(p => (
+                            <option
+                              key={p.id}
+                              value={p.id}
+                              disabled={usedPlayerIds.includes(p.id) && r.playerId !== p.id}
+                            >
+                              {p.name}{p.nickname ? ` "${p.nickname}"` : ''}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div className="form-group" style={{ width: '80px', flexShrink: 0 }}>
+                        <label>Finish</label>
+                        <input
+                          type="number"
+                          min="1"
+                          value={r.position}
+                          onChange={e => updateResult(i, 'position', e.target.value)}
+                          placeholder="#"
+                        />
+                      </div>
+
+                      <div className="rebuy-container">
+                        <label className="rebuy-label">Rebuy</label>
+                        <button
+                          type="button"
+                          className={`rebuy-chip ${r.rebuy ? 'rebuy-active' : ''}`}
+                          onClick={() => updateResult(i, 'rebuy', !r.rebuy)}
+                          title={r.rebuy ? 'Rebuy used' : 'No rebuy'}
+                        >
+                          <span className="chip-icon">♠</span>
+                          <span className="chip-text">{r.rebuy ? 'Used' : 'No'}</span>
+                        </button>
+                      </div>
+
+                      {results.length > 2 && (
+                        <button type="button" className="remove-row" onClick={() => removeRow(i)}>
+                          ×
+                        </button>
+                      )}
+                    </div>
+
+                    {r.playerId && buyInNum > 0 && (
+                      <div className="player-cost-line">
+                        Cost: {buyInNum}{r.rebuy ? ` + ${buyInNum} rebuy = ${buyInNum * 2}` : ''}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
 
             <button type="button" className="add-row-btn" onClick={addRow}>
               + Add Player

@@ -50,47 +50,55 @@ export default function Games() {
           </p>
         </div>
       ) : (
-        games.map(game => (
-          <div key={game.id} className="game-card">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span className="game-date">{formatDate(game.date)}</span>
-              <button
-                className="btn btn-danger btn-sm"
-                onClick={() => handleRemove(game.id)}
-              >
-                Delete
-              </button>
-            </div>
-            <div className="game-results">
-              {game.results
-                .sort((a, b) => a.position - b.position)
-                .map(r => {
-                  const player = players[r.playerId]
-                  return (
-                    <div key={r.playerId} className="game-result-chip">
-                      <span className={`position pos-${r.position <= 3 ? r.position : ''}`}>
-                        #{r.position}
-                      </span>
-                      <span>{player?.name || 'Unknown'}</span>
-                      {(r.buyIn > 0 || r.cashOut > 0) && (
-                        <span style={{
-                          color: r.cashOut - r.buyIn >= 0 ? 'var(--green-light)' : 'var(--red-light)',
-                          fontSize: '0.8rem',
-                        }}>
-                          ({r.cashOut - r.buyIn >= 0 ? '+' : ''}{r.cashOut - r.buyIn})
+        games.map(game => {
+          const gameBuyIn = game.buyIn || 0
+          const totalPot = game.results.reduce(
+            (sum, r) => sum + gameBuyIn + (r.rebuy ? gameBuyIn : 0), 0
+          )
+          return (
+            <div key={game.id} className="game-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <span className="game-date">{formatDate(game.date)}</span>
+                  {gameBuyIn > 0 && (
+                    <span style={{ marginLeft: '1rem', color: 'var(--gold-dim)', fontSize: '0.85rem' }}>
+                      Buy-in: {gameBuyIn} | Pot: {totalPot}
+                    </span>
+                  )}
+                </div>
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() => handleRemove(game.id)}
+                >
+                  Delete
+                </button>
+              </div>
+              <div className="game-results">
+                {game.results
+                  .sort((a, b) => a.position - b.position)
+                  .map(r => {
+                    const player = players[r.playerId]
+                    return (
+                      <div key={r.playerId} className="game-result-chip">
+                        <span className={`position pos-${r.position <= 3 ? r.position : ''}`}>
+                          #{r.position}
                         </span>
-                      )}
-                    </div>
-                  )
-                })}
+                        <span>{player?.name || 'Unknown'}</span>
+                        {r.rebuy && (
+                          <span className="rebuy-badge">R</span>
+                        )}
+                      </div>
+                    )
+                  })}
+              </div>
+              {game.notes && (
+                <p style={{ marginTop: '0.6rem', fontStyle: 'italic', color: 'var(--cream-dim)', fontSize: '0.9rem' }}>
+                  {game.notes}
+                </p>
+              )}
             </div>
-            {game.notes && (
-              <p style={{ marginTop: '0.6rem', fontStyle: 'italic', color: 'var(--cream-dim)', fontSize: '0.9rem' }}>
-                {game.notes}
-              </p>
-            )}
-          </div>
-        ))
+          )
+        })
       )}
     </>
   )

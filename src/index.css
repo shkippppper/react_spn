@@ -457,33 +457,176 @@ h2 {
 }
 
 /* ── GAME FORM ── */
-.result-row {
+.game-setup {
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.12);
+  margin-bottom: 1rem;
+}
+
+.buy-in-input input {
+  font-size: 1.2rem !important;
+  font-weight: 600;
+  color: var(--gold) !important;
+}
+
+.pot-display {
+  background: var(--bg-dark);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+.pot-label {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.7rem;
+  color: var(--cream-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.pot-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.player-results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.player-result-row {
+  background: var(--bg-dark);
+  border: 1px solid rgba(201, 168, 76, 0.08);
+  border-radius: 8px;
+  padding: 0.8rem 1rem;
+}
+
+.player-result-main {
   display: flex;
   gap: 0.8rem;
   align-items: end;
-  margin-bottom: 0.6rem;
   flex-wrap: wrap;
 }
 
-.result-row .form-group {
+.player-result-main .form-group {
   margin-bottom: 0;
-  flex: 1;
-  min-width: 100px;
 }
 
-.result-row .form-group:first-child {
-  flex: 2;
+.player-cost-line {
+  font-size: 0.8rem;
+  color: var(--cream-dim);
+  margin-top: 0.4rem;
+  padding-top: 0.4rem;
+  border-top: 1px solid rgba(201, 168, 76, 0.06);
+  font-style: italic;
 }
 
-.result-row .remove-row {
+/* ── REBUY CHIP ── */
+.rebuy-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+
+.rebuy-label {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.7rem !important;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.rebuy-chip {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 3px dashed var(--cream-dim);
+  background: transparent;
+  color: var(--cream-dim);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s;
+  position: relative;
+}
+
+.rebuy-chip .chip-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.rebuy-chip .chip-text {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rebuy-chip:hover {
+  border-color: var(--gold-dim);
+  color: var(--gold-dim);
+  transform: scale(1.05);
+}
+
+.rebuy-chip.rebuy-active {
+  border-style: solid;
+  border-color: var(--gold);
+  background: radial-gradient(circle, rgba(201, 168, 76, 0.2) 0%, rgba(201, 168, 76, 0.05) 70%);
+  color: var(--gold);
+  box-shadow:
+    0 0 12px rgba(201, 168, 76, 0.25),
+    inset 0 0 8px rgba(201, 168, 76, 0.1);
+  animation: chipGlow 2s ease-in-out infinite;
+}
+
+@keyframes chipGlow {
+  0%, 100% { box-shadow: 0 0 8px rgba(201, 168, 76, 0.2), inset 0 0 6px rgba(201, 168, 76, 0.1); }
+  50% { box-shadow: 0 0 16px rgba(201, 168, 76, 0.35), inset 0 0 10px rgba(201, 168, 76, 0.15); }
+}
+
+/* ── REBUY BADGE (game history) ── */
+.rebuy-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--gold-dim);
+  color: var(--bg-dark);
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.remove-row {
   background: none;
   border: none;
   color: var(--red-light);
   cursor: pointer;
-  font-size: 1.2rem;
-  padding: 0.5rem;
+  font-size: 1.4rem;
+  padding: 0.3rem 0.5rem;
   align-self: end;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.3rem;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.remove-row:hover {
+  opacity: 1;
 }
 
 .add-row-btn {

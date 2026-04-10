@@ -36,19 +36,21 @@ export async function getGames() {
   if (error) throw error
   return data.map(g => ({
     ...g,
+    buyIn: g.buy_in || 0,
     results: g.game_results.map(r => ({
       playerId: r.player_id,
       position: r.position,
+      rebuy: r.rebuy || false,
       buyIn: r.buy_in,
       cashOut: r.cash_out,
     })),
   }))
 }
 
-export async function addGame({ date, results, notes }) {
+export async function addGame({ date, buyIn, results, notes }) {
   const { data: game, error: gameErr } = await supabase
     .from('games')
-    .insert({ date, notes: notes || '' })
+    .insert({ date, buy_in: buyIn || 0, notes: notes || '' })
     .select()
     .single()
   if (gameErr) throw gameErr
@@ -57,6 +59,7 @@ export async function addGame({ date, results, notes }) {
     game_id: game.id,
     player_id: r.playerId,
     position: r.position,
+    rebuy: r.rebuy || false,
     buy_in: r.buyIn || 0,
     cash_out: r.cashOut || 0,
   }))
@@ -88,18 +91,24 @@ export async function getLeaderboard() {
       totalCashOut: 0,
       profit: 0,
       points: 0,
+      rebuys: 0,
     }
   })
 
   games.forEach(game => {
     const playerCount = game.results.length
+    const gameBuyIn = game.buyIn || 0
+
     game.results.forEach(r => {
       if (!stats[r.playerId]) return
       const s = stats[r.playerId]
       s.gamesPlayed++
-      s.totalBuyIn += r.buyIn || 0
+
+      const playerBuyIn = gameBuyIn + (r.rebuy ? gameBuyIn : 0)
+      s.totalBuyIn += playerBuyIn
       s.totalCashOut += r.cashOut || 0
       s.profit = s.totalCashOut - s.totalBuyIn
+      if (r.rebuy) s.rebuys++
 
       if (r.position === 1) {
         s.wins++
