@@ -112,7 +112,7 @@ export default function LogGame() {
                 {buyInNum > 0 && (
                   <div className="pot-display">
                     <span className="pot-label">Total Pot</span>
-                    <span className="pot-value">{totalPot}</span>
+                    <span className="pot-value">{totalPot}₾</span>
                   </div>
                 )}
               </div>
@@ -179,7 +179,7 @@ export default function LogGame() {
 
                     {r.playerId && buyInNum > 0 && (
                       <div className="player-cost-line">
-                        Cost: {buyInNum}{r.rebuy ? ` + ${buyInNum} rebuy = ${buyInNum * 2}` : ''}
+                        Cost: {buyInNum}₾{r.rebuy ? ` + ${buyInNum}₾ rebuy = ${buyInNum * 2}₾` : ''}
                       </div>
                     )}
                   </div>

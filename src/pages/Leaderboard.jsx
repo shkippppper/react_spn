@@ -99,7 +99,7 @@ export default function Leaderboard() {
                 <td>{p.wins}</td>
                 <td>{p.topThree}</td>
                 <td className={p.profit >= 0 ? 'stat-positive' : 'stat-negative'}>
-                  {p.profit >= 0 ? '+' : ''}{p.profit}
+                  {p.profit >= 0 ? '+' : ''}{p.profit}₾
                 </td>
                 <td className="stat-points">{p.points}</td>
               </tr>

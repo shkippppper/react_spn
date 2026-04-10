@@ -84,7 +84,7 @@ export default function Games() {
                     <span className="game-date">{formatDate(game.date)}</span>
                     <span className="game-header-summary">
                       {winnerPlayer?.name || 'Unknown'} won
-                      {game.totalPot > 0 && <span className="game-pot-tag"> · Pot: {game.totalPot}</span>}
+                      {game.totalPot > 0 && <span className="game-pot-tag"> · Pot: {game.totalPot}₾</span>}
                       <span className="game-players-count"> · {game.results.length} players</span>
                     </span>
                   </div>
@@ -103,7 +103,7 @@ export default function Games() {
                   <div className="game-stats-bar">
                     <div className="game-stat">
                       <span className="game-stat-label">Buy-in</span>
-                      <span className="game-stat-value">{game.buyIn}</span>
+                      <span className="game-stat-value">{game.buyIn}₾</span>
                     </div>
                     <div className="game-stat">
                       <span className="game-stat-label">Players</span>
@@ -115,7 +115,7 @@ export default function Games() {
                     </div>
                     <div className="game-stat">
                       <span className="game-stat-label">Total Pot</span>
-                      <span className="game-stat-value game-stat-gold">{game.totalPot}</span>
+                      <span className="game-stat-value game-stat-gold">{game.totalPot}₾</span>
                     </div>
                   </div>
 
@@ -142,10 +142,10 @@ export default function Games() {
                           </div>
                           <div className="game-expanded-details">
                             {r.rebuy && <span className="rebuy-badge">R</span>}
-                            <span className="game-expanded-cost">In: {r.buyIn}</span>
-                            {r.cashOut > 0 && <span className="game-expanded-won">Won: {r.cashOut}</span>}
+                            <span className="game-expanded-cost">In: {r.buyIn}₾</span>
+                            {r.cashOut > 0 && <span className="game-expanded-won">Won: {r.cashOut}₾</span>}
                             <span className={`game-expanded-profit ${profit >= 0 ? 'stat-positive' : 'stat-negative'}`}>
-                              {profit >= 0 ? '+' : ''}{profit}
+                              {profit >= 0 ? '+' : ''}{profit}₾
                             </span>
                           </div>
                         </div>
