@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getPlayers, addPlayer } from '../store'
+import { getPlayers, addPlayer, removePlayer } from '../store'
 import { useAuth } from '../AuthContext'
 
 export default function Players() {
@@ -57,6 +57,16 @@ export default function Players() {
     setSubmitting(false)
   }
 
+  async function handleRemove(id) {
+    if (!confirm('Remove this player?')) return
+    try {
+      await removePlayer(id)
+      setPlayers(await getPlayers())
+    } catch (err) {
+      alert('Failed to remove: ' + err.message)
+    }
+  }
+
   if (loading) return <div className="empty-state"><p>Loading...</p></div>
 
   return (
@@ -94,6 +104,11 @@ export default function Players() {
               </div>
               <div className="player-name">{p.name}</div>
               {p.nickname && <div className="player-nickname">"{p.nickname}"</div>}
+              {isAdmin && (
+                <button className="remove-btn" onClick={() => handleRemove(p.id)}>
+                  remove
+                </button>
+              )}
             </div>
           ))}
         </div>
