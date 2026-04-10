@@ -14,6 +14,7 @@ function RankingColumn({ title, players, valueKey, formatValue, accentColor }) {
       {top ? (
         <div className="ranking-champion">
           <div className="ranking-champion-avatar">
+            <img src="/crown.png" alt="Crown" className="ranking-crown" />
             <div className="avatar ranking-avatar-lg">
               {top.avatar
                 ? <img src={top.avatar} alt={top.name} />

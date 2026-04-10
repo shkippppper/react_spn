@@ -358,6 +358,7 @@ h2 {
 .game-winner-avatar {
   position: relative;
   flex-shrink: 0;
+  padding-top: 16px;
 }
 
 .game-winner-avatar .avatar {
@@ -366,13 +367,32 @@ h2 {
   border-color: #ffd700;
 }
 
-.winner-crown {
+.game-crown {
   position: absolute;
-  top: -8px;
-  right: -6px;
-  font-size: 0.75rem;
-  color: #ffd700;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48px;
+  height: auto;
+  z-index: 2;
+  filter: drop-shadow(0 1px 4px rgba(201, 168, 76, 0.4));
+}
+
+/* Crown on expanded row winner */
+.expanded-avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.expanded-crown {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: auto;
+  z-index: 2;
+  filter: drop-shadow(0 1px 3px rgba(201, 168, 76, 0.3));
 }
 
 .game-header-info {
@@ -484,6 +504,8 @@ h2 {
 .game-expanded-winner {
   background: rgba(255, 215, 0, 0.05);
   border: 1px solid rgba(255, 215, 0, 0.12);
+  padding-top: 1rem;
+  margin-top: 0.5rem;
 }
 
 .game-expanded-winner:hover {
@@ -910,6 +932,17 @@ h2 {
 .ranking-champion-avatar {
   position: relative;
   margin-bottom: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ranking-crown {
+  width: 100px;
+  height: auto;
+  margin-bottom: -18px;
+  z-index: 2;
+  filter: drop-shadow(0 2px 6px rgba(201, 168, 76, 0.4));
 }
 
 .ranking-avatar-lg {

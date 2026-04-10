@@ -1,6 +1,6 @@
 import { Routes, Route, NavLink } from 'react-router-dom'
-import Leaderboard from './pages/Leaderboard'
 import Rankings from './pages/Rankings'
+import Leaderboard from './pages/Leaderboard'
 import Players from './pages/Players'
 import Games from './pages/Games'
 
@@ -13,10 +13,10 @@ export default function App() {
         </NavLink>
         <div className="nav-links">
           <NavLink to="/" end className={({ isActive }) => isActive ? 'active' : ''}>
-            Statistics
-          </NavLink>
-          <NavLink to="/rankings" className={({ isActive }) => isActive ? 'active' : ''}>
             Rankings
+          </NavLink>
+          <NavLink to="/statistics" className={({ isActive }) => isActive ? 'active' : ''}>
+            Statistics
           </NavLink>
           <NavLink to="/players" className={({ isActive }) => isActive ? 'active' : ''}>
             Players
@@ -28,8 +28,8 @@ export default function App() {
       </nav>
       <main>
         <Routes>
-          <Route path="/" element={<Leaderboard />} />
-          <Route path="/rankings" element={<Rankings />} />
+          <Route path="/" element={<Rankings />} />
+          <Route path="/statistics" element={<Leaderboard />} />
           <Route path="/players" element={<Players />} />
           <Route path="/games" element={<Games />} />
         </Routes>

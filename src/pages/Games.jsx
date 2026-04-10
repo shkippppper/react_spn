@@ -158,12 +158,12 @@ export default function Games() {
                 <div className="game-header-left">
                   {winnerPlayer && (
                     <div className="game-winner-avatar">
+                      <img src="/crown.png" alt="Crown" className="game-crown" />
                       <div className="avatar">
                         {winnerPlayer.avatar
                           ? <img src={winnerPlayer.avatar} alt={winnerPlayer.name} />
                           : winnerPlayer.name.charAt(0).toUpperCase()}
                       </div>
-                      <div className="winner-crown">♛</div>
                     </div>
                   )}
                   <div className="game-header-info">
@@ -212,10 +212,13 @@ export default function Games() {
                               #{r.position}
                             </span>
                           </div>
-                          <div className="avatar" style={{ width: 36, height: 36, fontSize: '0.9rem' }}>
-                            {player?.avatar
-                              ? <img src={player.avatar} alt={player?.name} />
-                              : (player?.name?.charAt(0).toUpperCase() || '?')}
+                          <div className="expanded-avatar-wrap">
+                            {r.position === 1 && <img src="/crown.png" alt="Crown" className="expanded-crown" />}
+                            <div className="avatar" style={{ width: 36, height: 36, fontSize: '0.9rem' }}>
+                              {player?.avatar
+                                ? <img src={player.avatar} alt={player?.name} />
+                                : (player?.name?.charAt(0).toUpperCase() || '?')}
+                            </div>
                           </div>
                           <div className="game-expanded-player">
                             <span className="player-name" style={{ fontSize: '0.95rem' }}>{player?.name || 'Unknown'}</span>
