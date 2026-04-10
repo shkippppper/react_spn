@@ -55,7 +55,7 @@ function RankingColumn({ title, players, valueKey, formatValue, accentColor }) {
 }
 
 export default function Rankings() {
-  const [data, setData] = useState({ points: [], money: [], wins: [] })
+  const [data, setData] = useState({ ppg: [], money: [], wins: [], points: [] })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -63,14 +63,24 @@ export default function Rankings() {
       const board = await getLeaderboard()
       const active = board.filter(p => p.gamesPlayed > 0)
 
-      const byPoints = [...active].sort((a, b) => b.points - a.points)
-      const byMoney = [...active].sort((a, b) => b.profit - a.profit)
-      const byWins = [...active].sort((a, b) => {
+      // Add PPG (points per game)
+      const withPpg = active.map(p => ({
+        ...p,
+        ppg: p.gamesPlayed > 0 ? Math.round((p.points / p.gamesPlayed) * 10) / 10 : 0,
+      }))
+
+      const byPpg = [...withPpg].sort((a, b) => {
+        if (b.ppg !== a.ppg) return b.ppg - a.ppg
+        return b.points - a.points
+      })
+      const byMoney = [...withPpg].sort((a, b) => b.profit - a.profit)
+      const byWins = [...withPpg].sort((a, b) => {
         if (b.wins !== a.wins) return b.wins - a.wins
         return b.points - a.points
       })
+      const byPoints = [...withPpg].sort((a, b) => b.points - a.points)
 
-      setData({ points: byPoints, money: byMoney, wins: byWins })
+      setData({ ppg: byPpg, money: byMoney, wins: byWins, points: byPoints })
       setLoading(false)
     }
     load()
@@ -78,7 +88,7 @@ export default function Rankings() {
 
   if (loading) return <div className="empty-state"><p>Loading...</p></div>
 
-  const noData = data.points.length === 0
+  const noData = data.ppg.length === 0
 
   return (
     <>
@@ -93,11 +103,11 @@ export default function Rankings() {
       ) : (
         <div className="rankings-grid">
           <RankingColumn
-            title="Most Points"
-            players={data.points}
-            valueKey="points"
-            formatValue={v => `${v} pts`}
-            accentColor="#c9a84c"
+            title="Points Per Game"
+            players={data.ppg}
+            valueKey="ppg"
+            formatValue={v => `${v} ppg`}
+            accentColor="#c43e1c"
           />
           <RankingColumn
             title="Most Money Won"
@@ -112,6 +122,13 @@ export default function Rankings() {
             valueKey="wins"
             formatValue={v => `${v} ${v === 1 ? 'win' : 'wins'}`}
             accentColor="#e8d48b"
+          />
+          <RankingColumn
+            title="Total Points"
+            players={data.points}
+            valueKey="points"
+            formatValue={v => `${v} pts`}
+            accentColor="#c9a84c"
           />
         </div>
       )}

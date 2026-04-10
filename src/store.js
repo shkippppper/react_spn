@@ -85,6 +85,34 @@ export async function removeGame(id) {
   if (error) throw error
 }
 
+// ── SPN Point Table ──
+// Total pool = playerCount * 20, last place always 0
+const POINT_TABLE = {
+  2:  [40, 0],
+  3:  [40, 20, 0],
+  4:  [36, 26, 18, 0],
+  5:  [40, 28, 20, 12, 0],
+  6:  [43, 30, 22, 13, 12, 0],
+  7:  [48, 34, 24, 14, 13, 8, 0],
+  8:  [56, 40, 29, 16, 10, 6, 3, 0],
+  9:  [59, 41, 31, 18, 13, 9, 5, 4, 0],
+  10: [64, 44, 32, 20, 16, 10, 6, 4, 4, 0],
+  11: [68, 46, 33, 22, 18, 11, 9, 7, 4, 2, 0],
+  12: [72, 50, 36, 24, 19, 12, 10, 7, 5, 3, 2, 0],
+}
+
+function getPoints(playerCount, position) {
+  const table = POINT_TABLE[playerCount]
+  if (!table) {
+    // Fallback for >12 players: scale proportionally from 12-player table
+    const base = POINT_TABLE[12]
+    const ratio = (playerCount * 20) / 240
+    if (position <= 12) return Math.round(base[position - 1] * ratio)
+    return 0
+  }
+  return table[position - 1] ?? 0
+}
+
 // ── Leaderboard (computed from data) ──
 
 export async function getLeaderboard() {
@@ -117,16 +145,8 @@ export async function getLeaderboard() {
       s.profit = s.totalCashOut - s.totalBuyIn
       if (r.rebuy) s.rebuys++
 
-      if (r.position === 1) {
-        s.wins++
-        s.points += 10
-      } else if (r.position === 2) {
-        s.points += 7
-      } else if (r.position === 3) {
-        s.points += 5
-      } else {
-        s.points += Math.max(1, playerCount - r.position)
-      }
+      s.points += getPoints(playerCount, r.position)
+      if (r.position === 1) s.wins++
       if (r.position <= 3) s.topThree++
     })
   })

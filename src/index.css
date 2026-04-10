@@ -218,6 +218,70 @@ main {
   padding: 2.5rem 1.5rem;
 }
 
+@media (max-width: 550px) {
+  main {
+    padding: 1.5rem 1rem;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Leaderboard table scroll */
+  .leaderboard-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Game expanded details stack */
+  .game-expanded-details {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .game-expanded-row {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .game-stats-bar {
+    gap: 1rem;
+  }
+
+  /* Players grid */
+  .players-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Modal full-width on mobile */
+  .modal {
+    max-height: 90vh;
+    margin: 0.5rem;
+  }
+
+  .player-result-main {
+    gap: 0.5rem;
+  }
+
+  .rebuy-chip {
+    width: 44px;
+    height: 44px;
+  }
+}
+
 h1 {
   font-family: 'Playfair Display', serif;
   font-weight: 900;
@@ -1001,11 +1065,17 @@ h2 {
 /* ── RANKINGS PAGE ── */
 .rankings-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.2rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1000px) {
+  .rankings-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 550px) {
   .rankings-grid {
     grid-template-columns: 1fr;
   }
@@ -1062,12 +1132,20 @@ h2 {
 }
 
 .ranking-avatar-lg {
-  width: 110px !important;
-  height: 110px !important;
-  font-size: 2.6rem !important;
+  width: 90px !important;
+  height: 90px !important;
+  font-size: 2.2rem !important;
   border-width: 3px;
   border-color: var(--gold) !important;
   box-shadow: 0 4px 16px rgba(201, 168, 76, 0.2);
+}
+
+@media (max-width: 550px) {
+  .ranking-avatar-lg {
+    width: 100px !important;
+    height: 100px !important;
+    font-size: 2.4rem !important;
+  }
 }
 
 .ranking-champion-name {
