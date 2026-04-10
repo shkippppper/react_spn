@@ -34,17 +34,28 @@ export async function getGames() {
     .select(`*, game_results(*)`)
     .order('date', { ascending: false })
   if (error) throw error
-  return data.map(g => ({
-    ...g,
-    buyIn: g.buy_in || 0,
-    results: g.game_results.map(r => ({
+  return data.map(g => {
+    const gameBuyIn = g.buy_in || 0
+    const results = g.game_results.map(r => ({
       playerId: r.player_id,
       position: r.position,
       rebuy: r.rebuy || false,
-      buyIn: r.buy_in,
-      cashOut: r.cash_out,
-    })),
-  }))
+      buyIn: gameBuyIn + (r.rebuy ? gameBuyIn : 0),
+      cashOut: 0,
+    }))
+
+    // Winner (position 1) gets the whole pot
+    const totalPot = results.reduce((sum, r) => sum + r.buyIn, 0)
+    const winner = results.find(r => r.position === 1)
+    if (winner) winner.cashOut = totalPot
+
+    return {
+      ...g,
+      buyIn: gameBuyIn,
+      totalPot,
+      results,
+    }
+  })
 }
 
 export async function addGame({ date, buyIn, results, notes }) {
@@ -61,7 +72,7 @@ export async function addGame({ date, buyIn, results, notes }) {
     position: r.position,
     rebuy: r.rebuy || false,
     buy_in: r.buyIn || 0,
-    cash_out: r.cashOut || 0,
+    cash_out: 0,
   }))
   const { error: resErr } = await supabase.from('game_results').insert(rows)
   if (resErr) throw resErr
@@ -70,7 +81,6 @@ export async function addGame({ date, buyIn, results, notes }) {
 }
 
 export async function removeGame(id) {
-  // game_results deleted by cascade
   const { error } = await supabase.from('games').delete().eq('id', id)
   if (error) throw error
 }
@@ -97,16 +107,13 @@ export async function getLeaderboard() {
 
   games.forEach(game => {
     const playerCount = game.results.length
-    const gameBuyIn = game.buyIn || 0
 
     game.results.forEach(r => {
       if (!stats[r.playerId]) return
       const s = stats[r.playerId]
       s.gamesPlayed++
-
-      const playerBuyIn = gameBuyIn + (r.rebuy ? gameBuyIn : 0)
-      s.totalBuyIn += playerBuyIn
-      s.totalCashOut += r.cashOut || 0
+      s.totalBuyIn += r.buyIn
+      s.totalCashOut += r.cashOut
       s.profit = s.totalCashOut - s.totalBuyIn
       if (r.rebuy) s.rebuys++
 

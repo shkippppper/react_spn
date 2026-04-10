@@ -319,13 +319,66 @@ h2 {
   font-size: 0.8rem;
 }
 
-/* ── GAME LOG ── */
+/* ── GAME CARDS ── */
 .game-card {
   background: var(--bg-card);
   border: 1px solid rgba(201, 168, 76, 0.12);
   border-radius: 8px;
   padding: 1.2rem 1.5rem;
   margin-bottom: 0.8rem;
+}
+
+.game-card-expandable {
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.game-card-expandable:hover {
+  border-color: rgba(201, 168, 76, 0.25);
+}
+
+.game-card-open {
+  border-color: rgba(201, 168, 76, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* ── Game Header (collapsed view) ── */
+.game-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.game-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.game-winner-avatar {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.game-winner-avatar .avatar {
+  width: 44px;
+  height: 44px;
+  border-color: #ffd700;
+}
+
+.winner-crown {
+  position: absolute;
+  top: -8px;
+  right: -6px;
+  font-size: 0.75rem;
+  color: #ffd700;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+.game-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
 }
 
 .game-date {
@@ -335,27 +388,155 @@ h2 {
   letter-spacing: 0.1em;
 }
 
-.game-results {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.6rem;
+.game-header-summary {
+  font-size: 0.9rem;
+  color: var(--cream);
 }
 
-.game-result-chip {
+.game-pot-tag {
+  color: var(--gold-dim);
+}
+
+.game-players-count {
+  color: var(--cream-dim);
+}
+
+.game-header-right {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  background: var(--bg-dark);
-  padding: 0.3rem 0.7rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
 }
 
-.game-result-chip .position {
+.expand-arrow {
+  color: var(--cream-dim);
+  font-size: 1.1rem;
+  transition: transform 0.25s;
+}
+
+.expand-arrow-open {
+  transform: rotate(180deg);
+}
+
+/* ── Game Expanded View ── */
+.game-expanded {
+  cursor: default;
+}
+
+.game-expanded-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  margin: 1rem 0;
+  opacity: 0.4;
+}
+
+.game-stats-bar {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  padding: 0.6rem 0;
+}
+
+.game-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.game-stat-label {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.65rem;
+  color: var(--cream-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.game-stat-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--cream);
+}
+
+.game-stat-gold {
+  color: var(--gold) !important;
+}
+
+.game-expanded-results {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.game-expanded-row {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.8rem;
+  background: var(--bg-dark);
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+
+.game-expanded-row:hover {
+  background: rgba(26, 20, 16, 0.8);
+}
+
+.game-expanded-winner {
+  background: rgba(255, 215, 0, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.12);
+}
+
+.game-expanded-winner:hover {
+  background: rgba(255, 215, 0, 0.08);
+}
+
+.game-expanded-pos {
   font-family: 'Playfair Display', serif;
   font-weight: 700;
-  min-width: 20px;
+  font-size: 1rem;
+  min-width: 32px;
+  text-align: center;
+}
+
+.game-expanded-player {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.game-expanded-details {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.85rem;
+}
+
+.game-expanded-cost {
+  color: var(--cream-dim);
+}
+
+.game-expanded-won {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.game-expanded-profit {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  min-width: 50px;
+  text-align: right;
+}
+
+.game-expanded-notes {
+  margin-top: 0.8rem;
+  padding: 0.7rem 1rem;
+  background: var(--bg-dark);
+  border-radius: 6px;
+  border-left: 3px solid var(--gold-dim);
+  font-style: italic;
+  color: var(--cream-dim);
+  font-size: 0.9rem;
 }
 
 .pos-1 { color: #ffd700; }

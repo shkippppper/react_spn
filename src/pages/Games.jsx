@@ -6,6 +6,7 @@ export default function Games() {
   const [games, setGames] = useState([])
   const [players, setPlayers] = useState({})
   const [loading, setLoading] = useState(true)
+  const [expanded, setExpanded] = useState({})
 
   useEffect(() => {
     async function load() {
@@ -18,6 +19,10 @@ export default function Games() {
     }
     load()
   }, [])
+
+  function toggleExpand(id) {
+    setExpanded(prev => ({ ...prev, [id]: !prev[id] }))
+  }
 
   async function handleRemove(id) {
     if (!confirm('Delete this game record?')) return
@@ -51,50 +56,118 @@ export default function Games() {
         </div>
       ) : (
         games.map(game => {
-          const gameBuyIn = game.buyIn || 0
-          const totalPot = game.results.reduce(
-            (sum, r) => sum + gameBuyIn + (r.rebuy ? gameBuyIn : 0), 0
-          )
+          const isOpen = expanded[game.id]
+          const sorted = [...game.results].sort((a, b) => a.position - b.position)
+          const winner = sorted.find(r => r.position === 1)
+          const winnerPlayer = winner ? players[winner.playerId] : null
+
           return (
-            <div key={game.id} className="game-card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <span className="game-date">{formatDate(game.date)}</span>
-                  {gameBuyIn > 0 && (
-                    <span style={{ marginLeft: '1rem', color: 'var(--gold-dim)', fontSize: '0.85rem' }}>
-                      Buy-in: {gameBuyIn} | Pot: {totalPot}
-                    </span>
-                  )}
-                </div>
-                <button
-                  className="btn btn-danger btn-sm"
-                  onClick={() => handleRemove(game.id)}
-                >
-                  Delete
-                </button>
-              </div>
-              <div className="game-results">
-                {game.results
-                  .sort((a, b) => a.position - b.position)
-                  .map(r => {
-                    const player = players[r.playerId]
-                    return (
-                      <div key={r.playerId} className="game-result-chip">
-                        <span className={`position pos-${r.position <= 3 ? r.position : ''}`}>
-                          #{r.position}
-                        </span>
-                        <span>{player?.name || 'Unknown'}</span>
-                        {r.rebuy && (
-                          <span className="rebuy-badge">R</span>
-                        )}
+            <div
+              key={game.id}
+              className={`game-card game-card-expandable ${isOpen ? 'game-card-open' : ''}`}
+              onClick={() => toggleExpand(game.id)}
+            >
+              {/* ── Collapsed View ── */}
+              <div className="game-header">
+                <div className="game-header-left">
+                  {winnerPlayer && (
+                    <div className="game-winner-avatar">
+                      <div className="avatar">
+                        {winnerPlayer.avatar
+                          ? <img src={winnerPlayer.avatar} alt={winnerPlayer.name} />
+                          : winnerPlayer.name.charAt(0).toUpperCase()}
                       </div>
-                    )
-                  })}
+                      <div className="winner-crown">♛</div>
+                    </div>
+                  )}
+                  <div className="game-header-info">
+                    <span className="game-date">{formatDate(game.date)}</span>
+                    <span className="game-header-summary">
+                      {winnerPlayer?.name || 'Unknown'} won
+                      {game.totalPot > 0 && <span className="game-pot-tag"> · Pot: {game.totalPot}</span>}
+                      <span className="game-players-count"> · {game.results.length} players</span>
+                    </span>
+                  </div>
+                </div>
+                <div className="game-header-right">
+                  <span className={`expand-arrow ${isOpen ? 'expand-arrow-open' : ''}`}>▾</span>
+                </div>
               </div>
-              {game.notes && (
-                <p style={{ marginTop: '0.6rem', fontStyle: 'italic', color: 'var(--cream-dim)', fontSize: '0.9rem' }}>
-                  {game.notes}
-                </p>
+
+              {/* ── Expanded View ── */}
+              {isOpen && (
+                <div className="game-expanded" onClick={e => e.stopPropagation()}>
+                  <div className="game-expanded-divider" />
+
+                  {/* Stats bar */}
+                  <div className="game-stats-bar">
+                    <div className="game-stat">
+                      <span className="game-stat-label">Buy-in</span>
+                      <span className="game-stat-value">{game.buyIn}</span>
+                    </div>
+                    <div className="game-stat">
+                      <span className="game-stat-label">Players</span>
+                      <span className="game-stat-value">{game.results.length}</span>
+                    </div>
+                    <div className="game-stat">
+                      <span className="game-stat-label">Rebuys</span>
+                      <span className="game-stat-value">{game.results.filter(r => r.rebuy).length}</span>
+                    </div>
+                    <div className="game-stat">
+                      <span className="game-stat-label">Total Pot</span>
+                      <span className="game-stat-value game-stat-gold">{game.totalPot}</span>
+                    </div>
+                  </div>
+
+                  {/* Player results */}
+                  <div className="game-expanded-results">
+                    {sorted.map(r => {
+                      const player = players[r.playerId]
+                      const profit = r.cashOut - r.buyIn
+                      return (
+                        <div key={r.playerId} className={`game-expanded-row ${r.position === 1 ? 'game-expanded-winner' : ''}`}>
+                          <div className="game-expanded-pos">
+                            <span className={`pos-${r.position <= 3 ? r.position : ''}`}>
+                              #{r.position}
+                            </span>
+                          </div>
+                          <div className="avatar" style={{ width: 36, height: 36, fontSize: '0.9rem' }}>
+                            {player?.avatar
+                              ? <img src={player.avatar} alt={player?.name} />
+                              : (player?.name?.charAt(0).toUpperCase() || '?')}
+                          </div>
+                          <div className="game-expanded-player">
+                            <span className="player-name" style={{ fontSize: '0.95rem' }}>{player?.name || 'Unknown'}</span>
+                            {player?.nickname && <span className="player-nickname">"{player.nickname}"</span>}
+                          </div>
+                          <div className="game-expanded-details">
+                            {r.rebuy && <span className="rebuy-badge">R</span>}
+                            <span className="game-expanded-cost">In: {r.buyIn}</span>
+                            {r.cashOut > 0 && <span className="game-expanded-won">Won: {r.cashOut}</span>}
+                            <span className={`game-expanded-profit ${profit >= 0 ? 'stat-positive' : 'stat-negative'}`}>
+                              {profit >= 0 ? '+' : ''}{profit}
+                            </span>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+
+                  {game.notes && (
+                    <div className="game-expanded-notes">
+                      "{game.notes}"
+                    </div>
+                  )}
+
+                  <div style={{ marginTop: '0.8rem', textAlign: 'right' }}>
+                    <button
+                      className="btn btn-danger btn-sm"
+                      onClick={(e) => { e.stopPropagation(); handleRemove(game.id) }}
+                    >
+                      Delete Game
+                    </button>
+                  </div>
+                </div>
               )}
             </div>
           )
