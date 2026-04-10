@@ -22,7 +22,6 @@ function RankingColumn({ title, players, valueKey, formatValue, accentColor }) {
           </div>
           <h3 className="ranking-champion-name">{top.name.toUpperCase()}</h3>
           {top.nickname && <span className="ranking-champion-nickname">"{top.nickname}"</span>}
-          <span className="ranking-champion-tag" style={{ color: accentColor }}>LEADER</span>
           <span className="ranking-champion-value">{formatValue(top[valueKey])}</span>
         </div>
       ) : (

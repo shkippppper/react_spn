@@ -913,9 +913,9 @@ h2 {
 }
 
 .ranking-avatar-lg {
-  width: 80px !important;
-  height: 80px !important;
-  font-size: 2rem !important;
+  width: 110px !important;
+  height: 110px !important;
+  font-size: 2.6rem !important;
   border-width: 3px;
   border-color: var(--gold) !important;
   box-shadow: 0 4px 16px rgba(201, 168, 76, 0.2);
@@ -1008,4 +1008,79 @@ h2 {
   font-size: 0.9rem;
   color: var(--gold-dim);
   text-align: right;
+}
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  background: var(--bg-card);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 640px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.15);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--cream-dim);
+  font-size: 1.6rem;
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.modal-close:hover {
+  color: var(--cream);
+}
+
+/* scrollbar styling for modal */
+.modal::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal::-webkit-scrollbar-thumb {
+  background: var(--gold-dim);
+  border-radius: 3px;
 }
